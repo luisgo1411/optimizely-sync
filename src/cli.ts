@@ -32,6 +32,10 @@ program
     'The path to the file that contains your desired configuration.',
   )
   .option(
+    '-b, --boolean-value',
+    'Allow only true (turn on) or false (turn off) a feature.',
+  )
+  .option(
     '-d, --config-dir <path>',
     'The path to the directory that contains json files with your desired configurations.',
   )
@@ -51,6 +55,7 @@ type CliOptions = {
   configDir?: string;
   configFile?: string;
   dryRun: boolean;
+  booleanValue: boolean;
   projectId: number;
 };
 
@@ -60,6 +65,7 @@ function validateOptions(options: Record<string, string>): CliOptions {
   const configDir = options.configDir;
   const configFile = options.configFile;
   const dryRun = !!options.dryRun;
+  const booleanValue = !!options.booleanValue;
   const projectId = options.projectId || process.env.OPTIMIZELY_PROJECT_ID;
 
   if (!accessToken) {
@@ -93,6 +99,7 @@ function validateOptions(options: Record<string, string>): CliOptions {
   return {
     accessToken,
     dryRun,
+    booleanValue,
     projectId: Number(projectId),
     configDir,
     configFile,
@@ -138,11 +145,11 @@ function readConfig(options: CliOptions): unknown {
 
   const features = await optimizelyClient.listFeatures();
 
-  await createFeatures(options.dryRun, optimizelyClient, config, features);
-  await deleteFeatures(options.dryRun, optimizelyClient, config, features);
+  await createFeatures(options.dryRun, options.booleanValue, optimizelyClient, config, features);
+  await deleteFeatures(options.dryRun, options.booleanValue, optimizelyClient, config, features);
 
   const hasChanges = detectChanges(config, features);
   if (hasChanges) {
-    await persistFeatures(options.dryRun, optimizelyClient, config, features);
+    await persistFeatures(options.dryRun, options.booleanValue, optimizelyClient, config, features);
   }
 })();
