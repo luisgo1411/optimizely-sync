@@ -11,6 +11,7 @@ import { Feature } from './optimizely-client-types';
 
 export async function createFeatures(
   dryRun: boolean,
+  booleanValue: boolean,
   optimizelyClient: OptimizelyClient,
   config: OptimizelySyncConfig,
   features: Feature[],
@@ -39,6 +40,7 @@ export async function createFeatures(
 
 export async function deleteFeatures(
   dryRun: boolean,
+  booleanValue: boolean,
   optimizelyClient: OptimizelyClient,
   config: OptimizelySyncConfig,
   features: Feature[],
@@ -90,6 +92,7 @@ export function detectChanges(
 }
 export async function persistFeatures(
   dryRun: boolean,
+  booleanValue: boolean,
   optimizelyClient: OptimizelyClient,
   config: OptimizelySyncConfig,
   features: Feature[],
